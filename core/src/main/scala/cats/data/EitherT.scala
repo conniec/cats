@@ -208,6 +208,17 @@ final case class EitherT[F[_], A, B](value: F[Either[A, B]]) {
    */
   def toNested: Nested[F, Either[A, ?], B] = Nested[F, Either[A, ?], B](value)
 
+  /**
+  * Transform this `EitherT[F, A, B]` into a `[[Nested]][F, Validated[A, ?], B]` or `[[Nested]][F, ValidatedNel[A, B].
+  * 
+  * Example:
+  * {{{
+  * scala> import cats.data.{Validated, EitherT}
+  * scala> import cats.implicitis._
+  * scala> val f: Int => String = i => i*2.toString
+  * scala> val r1: EitherT[Option, String, Int => String] = EitherT.right(Some(f))
+  * }}}
+  */
   def toNestedValidated(implicit F: Functor[F]): Nested[F, Validated[A, ?], B] =
     Nested[F, Validated[A, ?], B](F.map(value)(_.toValidated))
 
